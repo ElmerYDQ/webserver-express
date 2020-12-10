@@ -16,7 +16,7 @@ pipeline {
                 """
             }
         }
-        
+
         stage('Cloning Git') {
             steps {
                 git 'https://github.com/ElmerYDQ/webserver-express.git'
@@ -41,8 +41,8 @@ pipeline {
             steps{
                 script {
                     docker.withRegistry( '', registryCredential ) {
-                        dockerImage.push(":$BUILD_NUMBER")
-                        dockerImage.push(":latest")
+                        dockerImage.push("$BUILD_NUMBER")
+                        dockerImage.push("latest")
                     }
                 }
             }
@@ -133,7 +133,7 @@ pipeline {
             steps{
                 script {
                     docker.withRegistry( '', registryCredential ) {
-                        dockerImageDevelop4.push(":featureDevelop4")
+                        dockerImageDevelop4.push("featureDevelop4")
                     }
                 }
             }

@@ -1,5 +1,5 @@
 pipeline {
-    /*environment {
+    environment {
         registry = "3.136.118.102:5000/repo_entelgy"
         registryCredential = 'dockerprivate'
     }
@@ -12,7 +12,11 @@ pipeline {
                 git 'https://github.com/ElmerYDQ/webserver-express.git'
             }
         }
+
         stage('Building image') {
+            when {
+                branch 'master'
+            }
             steps{
                 script {
                 dockerImage = docker.build registry + ":$BUILD_NUMBER"
@@ -21,6 +25,9 @@ pipeline {
         }
 
         stage('Push Image') {
+            when {
+                branch 'master'
+            }
             steps{
                 script {
                 docker.withRegistry( '', registryCredential ) {
@@ -31,6 +38,9 @@ pipeline {
             }
         }
         stage('Remove Unused docker image') {
+            when {
+                branch 'master'
+            }
             steps{
                 sh "docker rmi $registry:$BUILD_NUMBER"
             }
@@ -45,9 +55,7 @@ pipeline {
                 }
             }
         }
-    }*/
-
-    agent any
+    }
 
     stages {
         
@@ -56,37 +64,6 @@ pipeline {
                 cleanWs()
                 sh """
                 echo "Cleaned Up Workspace For Project"
-                """
-            }
-        }
-
-        stage('Unit Testing') {
-            steps {
-                sh """
-                echo "Running Unit Tests"
-                """
-            }
-        }
-
-        stage('Code Analysis') {
-            steps {
-                sh """
-                echo "Running Code Analysis"
-                """
-            }
-        }
-
-        stage('Build Deploy Code') {
-            when {
-                branch 'develop'
-            }
-            steps {
-                sh """
-                echo "Building Artifact"
-                """
-
-                sh """
-                echo "Deploying Code"
                 """
             }
         }
@@ -137,6 +114,38 @@ pipeline {
                 sh """
                 echo "Cambio en feature/develop4"
                 """
+            }
+        }
+
+        stage('Building image develop4') {
+            when {
+                branch 'feature/develop4'
+            }
+            steps{
+                script {
+                dockerImage = docker.build registry + ":featureDevelop4"
+                }
+            }
+        }
+
+        stage('Push Image develop4') {
+            when {
+                branch 'feature/develop4'
+            }
+            steps{
+                script {
+                docker.withRegistry( '', registryCredential ) {
+                    dockerImage.push(":featureDevelop4")
+                }
+                }
+            }
+        }
+        stage('Remove Unused docker image develop4') {
+            when {
+                branch 'feature/develop4'
+            }
+            steps{
+                sh "docker rmi $registry:featureDevelop4"
             }
         }
 

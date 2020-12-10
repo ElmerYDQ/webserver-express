@@ -1,44 +1,95 @@
 pipeline {
-  environment {
-    registry = "3.136.118.102:5000/repo_entelgy"
-    registryCredential = 'dockerprivate'
-  }
-  agent any
-  stages {
-    stage('Cloning Git') {
-      steps {
-        git 'https://github.com/ElmerYDQ/webserver-express.git'
-      }
+    /*environment {
+        registry = "3.136.118.102:5000/repo_entelgy"
+        registryCredential = 'dockerprivate'
     }
-    stage('Building image') {
-      steps{
-        script {
-          dockerImage = docker.build registry + ":$BUILD_NUMBER"
-        }
-      }
-    }
+
+    agent any
     
-    stage('Push Image') {
-      steps{
-        script {
-          docker.withRegistry( '', registryCredential ) {
-            dockerImage.push(":$BUILD_NUMBER")
-            dockerImage.push(":latest")
-          }
+    stages {
+        stage('Cloning Git') {
+            steps {
+                git 'https://github.com/ElmerYDQ/webserver-express.git'
+            }
         }
-      }
-    }
-    stage('Remove Unused docker image') {
-      steps{
-        sh "docker rmi $registry:$BUILD_NUMBER"
-      }
-    }
-    stage('Deploy App on Kubernetes') {
-      steps {
-        script {
-          kubernetesDeploy(configs: "app-prueba.yml", kubeconfigId: "kubeconfig")
+        stage('Building image') {
+            steps{
+                script {
+                dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                }
+            }
         }
-      }
-    }
-  }
+
+        stage('Push Image') {
+            steps{
+                script {
+                docker.withRegistry( '', registryCredential ) {
+                    dockerImage.push(":$BUILD_NUMBER")
+                    dockerImage.push(":latest")
+                }
+                }
+            }
+        }
+        stage('Remove Unused docker image') {
+            steps{
+                sh "docker rmi $registry:$BUILD_NUMBER"
+            }
+        }
+        stage('Deploy App on Kubernetes') {
+            when {
+                branch 'master'
+            }
+            steps {
+                script {
+                    kubernetesDeploy(configs: "app-prueba.yml", kubeconfigId: "kubeconfig")
+                }
+            }
+        }
+    }*/
+
+    agent any
+
+    stages {
+        
+        stage('Cleanup Workspace') {
+            steps {
+                cleanWs()
+                sh """
+                echo "Cleaned Up Workspace For Project"
+                """
+            }
+        }
+
+        stage('Unit Testing') {
+            steps {
+                sh """
+                echo "Running Unit Tests"
+                """
+            }
+        }
+
+        stage('Code Analysis') {
+            steps {
+                sh """
+                echo "Running Code Analysis"
+                """
+            }
+        }
+
+        stage('Build Deploy Code') {
+            when {
+                branch 'develop'
+            }
+            steps {
+                sh """
+                echo "Building Artifact"
+                """
+
+                sh """
+                echo "Deploying Code"
+                """
+            }
+        }
+
+    }   
 }

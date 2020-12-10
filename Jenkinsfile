@@ -91,6 +91,21 @@ pipeline {
             }
         }
 
+        stage('rama feature/develop3') {
+            when {
+                branch 'feature/develop3'
+            }
+            steps {
+                sh """
+                echo "en la rama feature/develop3"
+                """
+
+                sh """
+                echo "Deploying en la rama feature/develop3"
+                """
+             }
+        }
+
         stage('rama feature/develop2') {
             when {
                 branch 'feature/develop2'

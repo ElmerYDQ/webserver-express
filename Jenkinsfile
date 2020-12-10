@@ -121,5 +121,20 @@ pipeline {
             }
         }
 
+        stage('rama feature/develop4') {
+            when {
+                branch 'feature/develop4'
+            }
+            steps {
+                sh """
+                echo "en la rama feature/develop4"
+                """
+
+                sh """
+                echo "Deploying en la rama feature/develop4"
+                """
+            }
+        }
+
     }   
 }

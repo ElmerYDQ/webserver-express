@@ -138,6 +138,7 @@ pipeline {
                 }
             }
         }
+        
         stage('Remove Unused docker image develop4') {
             when {
                 branch 'feature/develop4'

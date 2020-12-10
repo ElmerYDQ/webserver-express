@@ -16,7 +16,7 @@ app.set('view engine', 'hbs');
 app.get('/', (req, res) => {
 
     res.render('home', {
-        nombre: 'Hola Entelgy 2020'
+        nombre: 'Hola develop 2020'
     });
 
 });

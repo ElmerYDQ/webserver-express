@@ -19,7 +19,7 @@ pipeline {
             }
             steps{
                 script {
-                dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
                 }
             }
         }
@@ -30,10 +30,10 @@ pipeline {
             }
             steps{
                 script {
-                docker.withRegistry( '', registryCredential ) {
-                    dockerImage.push(":$BUILD_NUMBER")
-                    dockerImage.push(":latest")
-                }
+                    docker.withRegistry( '', registryCredential ) {
+                        dockerImage.push(":$BUILD_NUMBER")
+                        dockerImage.push(":latest")
+                    }
                 }
             }
         }
@@ -120,7 +120,7 @@ pipeline {
             }
             steps{
                 script {
-                dockerImage = docker.build registry + ":featureDevelop4"
+                    dockerImageDevelop4 = docker.build registry + ":featureDevelop4"
                 }
             }
         }
@@ -131,9 +131,9 @@ pipeline {
             }
             steps{
                 script {
-                docker.withRegistry( '', registryCredential ) {
-                    dockerImage.push(":featureDevelop4")
-                }
+                    docker.withRegistry( '', registryCredential ) {
+                        dockerImageDevelop4.push(":featureDevelop4")
+                    }
                 }
             }
         }

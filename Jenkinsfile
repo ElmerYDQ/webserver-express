@@ -55,10 +55,7 @@ pipeline {
                 }
             }
         }
-    }
 
-    stages {
-        
         stage('Cleanup Workspace') {
             steps {
                 cleanWs()
@@ -148,6 +145,5 @@ pipeline {
                 sh "docker rmi $registry:featureDevelop4"
             }
         }
-
-    }   
+    }  
 }

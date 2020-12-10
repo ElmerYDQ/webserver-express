@@ -110,7 +110,7 @@ pipeline {
                 """
 
                 sh """
-                echo "Cambio en feature/develop4"
+                echo "Cambio en el feature/develop4"
                 """
             }
         }
@@ -138,7 +138,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Remove Unused docker image develop4') {
             when {
                 branch 'feature/develop4'

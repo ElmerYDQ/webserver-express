@@ -7,6 +7,16 @@ pipeline {
     agent any
     
     stages {
+
+        stage('Cleanup Workspace') {
+            steps {
+                cleanWs()
+                sh """
+                echo "Cleaned Up Workspace For Project"
+                """
+            }
+        }
+        
         stage('Cloning Git') {
             steps {
                 git 'https://github.com/ElmerYDQ/webserver-express.git'
@@ -53,15 +63,6 @@ pipeline {
                 script {
                     kubernetesDeploy(configs: "app-prueba.yml", kubeconfigId: "kubeconfig")
                 }
-            }
-        }
-
-        stage('Cleanup Workspace') {
-            steps {
-                cleanWs()
-                sh """
-                echo "Cleaned Up Workspace For Project"
-                """
             }
         }
 

@@ -1,5 +1,5 @@
 pipeline {
-    /*environment {
+    environment {
         registry = "3.136.118.102:5000/repo_entelgy"
         registryCredential = 'dockerprivate'
     }
@@ -7,30 +7,50 @@ pipeline {
     agent any
     
     stages {
+
+        stage('Cleanup Workspace') {
+            steps {
+                cleanWs()
+                sh """
+                echo "Cleaned Up Workspace For Project"
+                """
+            }
+        }
+
         stage('Cloning Git') {
             steps {
                 git 'https://github.com/ElmerYDQ/webserver-express.git'
             }
         }
+
         stage('Building image') {
+            when {
+                branch 'master'
+            }
             steps{
                 script {
-                dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
                 }
             }
         }
 
         stage('Push Image') {
+            when {
+                branch 'master'
+            }
             steps{
                 script {
-                docker.withRegistry( '', registryCredential ) {
-                    dockerImage.push(":$BUILD_NUMBER")
-                    dockerImage.push(":latest")
-                }
+                    docker.withRegistry( '', registryCredential ) {
+                        dockerImage.push("$BUILD_NUMBER")
+                        dockerImage.push("latest")
+                    }
                 }
             }
         }
         stage('Remove Unused docker image') {
+            when {
+                branch 'master'
+            }
             steps{
                 sh "docker rmi $registry:$BUILD_NUMBER"
             }
@@ -43,51 +63,6 @@ pipeline {
                 script {
                     kubernetesDeploy(configs: "app-prueba.yml", kubeconfigId: "kubeconfig")
                 }
-            }
-        }
-    }*/
-
-    agent any
-
-    stages {
-        
-        stage('Cleanup Workspace') {
-            steps {
-                cleanWs()
-                sh """
-                echo "Cleaned Up Workspace For Project"
-                """
-            }
-        }
-
-        stage('Unit Testing') {
-            steps {
-                sh """
-                echo "Running Unit Tests"
-                """
-            }
-        }
-
-        stage('Code Analysis') {
-            steps {
-                sh """
-                echo "Running Code Analysis"
-                """
-            }
-        }
-
-        stage('Build Deploy Code') {
-            when {
-                branch 'develop'
-            }
-            steps {
-                sh """
-                echo "Building Artifact"
-                """
-
-                sh """
-                echo "Deploying Code"
-                """
             }
         }
 
@@ -121,5 +96,56 @@ pipeline {
             }
         }
 
-    }   
+        stage('rama feature/develop4') {
+            when {
+                branch 'feature/develop4'
+            }
+            steps {
+                sh """
+                echo "en la rama feature/develop4"
+                """
+
+                sh """
+                echo "Deploying en la rama feature/develop4"
+                """
+
+                sh """
+                echo "Cambio en el feature/develop4"
+                """
+            }
+        }
+
+        stage('Building image develop4') {
+            when {
+                branch 'feature/develop4'
+            }
+            steps{
+                script {
+                    dockerImageDevelop4 = docker.build registry + ":featureDevelop4"
+                }
+            }
+        }
+
+        stage('Push Image develop4') {
+            when {
+                branch 'feature/develop4'
+            }
+            steps{
+                script {
+                    docker.withRegistry( '', registryCredential ) {
+                        dockerImageDevelop4.push("featureDevelop4")
+                    }
+                }
+            }
+        }
+
+        stage('Remove Unused docker image develop4') {
+            when {
+                branch 'feature/develop4'
+            }
+            steps{
+                sh "docker rmi $registry:featureDevelop4"
+            }
+        }
+    }  
 }
